@@ -16,9 +16,7 @@ class TurmaController extends Controller
     {
         $turma = Turma::where('id', $id)->first();
 
-        if (!$turma) {
-            return response()->json(['error' => 'Turma não encontrada'], 404);
-        }
+        if (!$turma)return response()->json(['error' => 'Turma não encontrada'], 404);
 
         return response()->json($turma->toArray());
     }
@@ -44,9 +42,7 @@ class TurmaController extends Controller
 
         $turma = Turma::find($id);
 
-        if (!$turma) {
-            return response()->json(['error' => 'Turma não encontrada'], 404);
-        }
+        if (!$turma) return response()->json(['error' => 'Turma não encontrada'], 404);
 
         $turma->fill($validated);
 
@@ -70,9 +66,8 @@ class TurmaController extends Controller
     {
         $turma = Turma::find($id);
 
-        if (!$turma) {
-            return response()->json(['error' => 'Turma não encontrada'], 404);
-        }
+        if (!$turma) return response()->json(['error' => 'Turma não encontrada'], 404);
+
 
         $turmaNome = $turma->name;
         $turma->delete();

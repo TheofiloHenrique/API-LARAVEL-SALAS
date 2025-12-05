@@ -1,29 +1,47 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\AulaController;
 use App\Http\Controllers\TurmaController;
+use App\Http\Controllers\SalaController;
+use App\Http\Controllers\TurmaSalaController;
 
-Route::get('/', function () {
-    return view('welcome');
+Route::prefix('turmas')->group(function () {
+    Route::post('/', [TurmaController::class, 'criar']);
+
+    Route::get('/', [TurmaController::class, 'listar']);
+
+    Route::get('/{id}', [TurmaController::class, 'listarPorId']);
+
+    Route::patch('/{id}', [TurmaController::class, 'atualizar']);
+
+    Route::delete('/{id}', [TurmaController::class, 'deletar']);
+
 });
 
-Route::get('/home', function () {
-    return view('theo');
+Route::prefix('salas')->group(function () {
+    Route::post('/', [SalaController::class, 'criar']);
+
+    Route::get('/', [SalaController::class, 'listar']);
+
+    Route::get('/{id}', [SalaController::class, 'listarPorId']);
+
+    Route::patch('/{id}', [SalaController::class, 'atualizar']);
+
+    Route::delete('/{id}', [SalaController::class, 'deletar']);
 });
 
-Route::get('/aula1', [AulaController::class, 'aula1']);
+Route::prefix('turmaSalas')->group(function () {
+    Route::post('/', [TurmaSalaController::class, 'criar']);
 
-Route::get('/turma-cadastro', [TurmaController::class, 'cadastro']);
+    Route::get('/', [TurmaSalaController::class, 'listar']);
 
-Route::get('/turma-listar', [TurmaController::class, 'listar']);
+    Route::get('/codigo/{codigo}', [TurmaSalaController::class, 'buscarPorCodigo']);
 
-Route::get('/turma-listar/{id}', [TurmaController::class, 'listarId']);
+    Route::get('/{id}', [TurmaSalaController::class, 'listarPorId']);
 
-Route::get('/turma-alterar/{id}/{name}', [TurmaController::class, 'alterar']);
+    Route::patch('/{id}', [TurmaSalaController::class, 'atualizar']);
 
-Route::get('/turma-deletar/{id}', [TurmaController::class, 'deletar']);
-
-
+    Route::delete('/{id}', [TurmaSalaController::class, 'deletar']);
+});
 
 
