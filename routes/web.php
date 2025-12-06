@@ -10,6 +10,8 @@ Route::prefix('turmas')->group(function () {
 
     Route::get('/', [TurmaController::class, 'listar']);
 
+    Route::get('/{codigo}', [TurmaController::class, 'ocupacaoPorCodigo']);
+
     Route::get('/{id}', [TurmaController::class, 'listarPorId']);
 
     Route::patch('/{id}', [TurmaController::class, 'atualizar']);
@@ -23,6 +25,8 @@ Route::prefix('salas')->group(function () {
 
     Route::get('/', [SalaController::class, 'listar']);
 
+    Route::get('/{numero_sala}', [SalaController::class, 'ocupacaoPorData']);
+
     Route::get('/{id}', [SalaController::class, 'listarPorId']);
 
     Route::patch('/{id}', [SalaController::class, 'atualizar']);
@@ -35,7 +39,7 @@ Route::prefix('turmaSalas')->group(function () {
 
     Route::get('/', [TurmaSalaController::class, 'listar']);
 
-    Route::get('/codigo/{codigo}', [TurmaSalaController::class, 'buscarPorCodigo']);
+    Route::get('/{codigo}', [TurmaSalaController::class, 'buscarPorCodigo']);
 
     Route::get('/{id}', [TurmaSalaController::class, 'listarPorId']);
 

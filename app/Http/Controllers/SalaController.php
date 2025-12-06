@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\Sala;
 use Illuminate\Http\Request;
+use Carbon\Carbon;
+use App\Models\TurmaSala;
 
 class SalaController extends Controller
 {
@@ -47,4 +49,32 @@ class SalaController extends Controller
     {
         return Sala::destroy($id);
     }
+
+     public function ocupacaoPorData($numeroSala, Request $request)
+    {
+        $data = $request->query('data', now()->toDateString());
+
+        $diaSemana = Carbon::parse($data)->locale('pt_BR')->dayName;
+
+        $mapa = [
+            'segunda-feira' => 'seg',
+            'terça-feira'   => 'ter',
+            'quarta-feira'  => 'quar',
+            'quinta-feira'  => 'quin',
+            'sexta-feira'   => 'sex',
+        ];
+
+        if (!isset($mapa[$diaSemana])) return response()->json(['message' => 'Apenas dias úteis são suportados'], 400);
+
+        $coluna = $mapa[$diaSemana];
+
+        $ocupacao = TurmaSala::with(['turma', 'sala'])
+            ->whereHas('sala', fn($q) => $q->where('numero_sala', $numeroSala))
+            ->where($coluna, 1)
+            ->get();
+
+        return response()->json($ocupacao);
+    }
 }
+
+

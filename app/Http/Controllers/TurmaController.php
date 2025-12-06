@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 use App\Models\Turma;
+use App\Models\TurmaSala;
 use Illuminate\Http\Request;
+use Carbon\Carbon;
 
 class TurmaController extends Controller
 {
@@ -82,4 +84,45 @@ class TurmaController extends Controller
             ]
         ], 200);
     }
+
+    public function ocupacaoPorCodigo(Request $request, $codigo)
+    {
+        $data = $request->query('data', now()->toDateString());
+
+        $diaSemana = Carbon::parse($data)->locale('pt_BR')->dayName;
+
+        $mapaDias = [
+            'segunda-feira'  => 'seg',
+            'terça-feira' => 'ter',
+            'quarta-feira' => 'quar',
+            'quinta-feira' => 'quin',
+            'sexta-feira' => 'sex',
+        ];
+
+        if (!isset($mapaDias[$diaSemana])) return response()->json(['error' => 'Não há aula nesta data (sábado ou domingo).'], 400);
+
+        $coluna = $mapaDias[$diaSemana];
+
+        $turma = TurmaSala::with(['turma', 'sala'])
+            ->whereHas('turma', function($q) use ($codigo) {
+                $q->where('codigo', $codigo);
+            })
+            ->where($coluna, 1)
+            ->first();
+
+        if (!$turma) return response()->json(['message' => 'Nenhuma sala encontrada para esta turma neste dia.'], 404);
+
+        return response()->json([
+            'data'      => $data,
+            'dia'       => $coluna,
+            'turma'     => $turma->turma->name,
+            'codigo'    => $turma->turma->codigo,
+            'curso'     => $turma->turma->curso,
+            'sala'      => $turma->sala->numero_sala,
+            'piso'      => $turma->sala->piso,
+            'professor' => $turma->professor,
+            'materia'   => $turma->materia
+        ]);
+    }
+
 }
